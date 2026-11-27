@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Focus Board",
+  "version": "1.0.0",
+  "description": "100% local distraction blocker, intention gate, study board, timestamped notes, and daily time tracker for YouTube.",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "*://*.youtube.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "YouTube Focus Board"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.youtube.com/*"
+      ],
+      "css": [
+        "styles.css"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

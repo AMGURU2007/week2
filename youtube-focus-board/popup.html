@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouTube Focus Board</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="yfb-popup-body">
+  <main class="yfb-popup">
+    <header class="yfb-popup-header">
+      <div class="yfb-popup-brand">
+        <span class="yfb-dot"></span>
+        <h1 class="yfb-popup-title">YouTube Focus Board</h1>
+      </div>
+      <span class="yfb-time-pill" id="popup-today-time">Today: 0 min</span>
+    </header>
+
+    <section class="yfb-card">
+      <div class="yfb-section-header">
+        <h2 class="yfb-section-title">Intention Gate</h2>
+        <button type="button" class="yfb-btn-sm yfb-btn-secondary" id="popup-lock-btn" hidden>Lock Now</button>
+      </div>
+      <div class="yfb-gate-status">
+        <span class="yfb-gate-status-text" id="popup-gate-status">Checking status...</span>
+      </div>
+    </section>
+
+    <section class="yfb-card">
+      <h2 class="yfb-section-title">Distraction Blocker</h2>
+      <label class="yfb-toggle-row">
+        <span>Hide Shorts (shelves, nav, redirects)</span>
+        <input type="checkbox" id="toggle-shorts" />
+      </label>
+      <label class="yfb-toggle-row">
+        <span>Hide Home &amp; Sidebar Recommendations</span>
+        <input type="checkbox" id="toggle-recs" />
+      </label>
+      <label class="yfb-toggle-row">
+        <span>Hide Comments</span>
+        <input type="checkbox" id="toggle-comments" />
+      </label>
+    </section>
+
+    <section class="yfb-card">
+      <div class="yfb-section-header">
+        <h2 class="yfb-section-title">Study List</h2>
+        <button type="button" class="yfb-btn-sm" id="popup-save-video" disabled>+ Save Current</button>
+      </div>
+      <ul class="yfb-list" id="popup-study-list"></ul>
+    </section>
+
+    <section class="yfb-card">
+      <div class="yfb-section-header">
+        <h2 class="yfb-section-title">Timestamp Notes</h2>
+        <span class="yfb-time-pill" id="popup-live-ts" hidden>00:00</span>
+      </div>
+      <form class="yfb-note-form" id="popup-note-form" hidden>
+        <input
+          type="text"
+          class="yfb-input"
+          id="popup-note-input"
+          placeholder="Write note at current time..."
+          maxlength="240"
+        />
+        <button type="submit" class="yfb-btn-sm">Add</button>
+      </form>
+      <ul class="yfb-list" id="popup-notes-list"></ul>
+    </section>
+  </main>
+
+  <script src="popup.js"></script>
+</body>
+</html>

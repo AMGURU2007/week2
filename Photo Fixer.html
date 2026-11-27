@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Form Photo Fixer</title>
+<style>
+:root{font-family:Inter,system-ui,Arial,sans-serif;color:#172033;background:#f4f6fb}*{box-sizing:border-box}body{margin:0}.wrap{max-width:1050px;margin:32px auto;padding:0 18px}.hero{background:#172554;color:white;padding:26px;border-radius:18px}.hero h1{margin:0 0 8px}.hero p{margin:0;color:#dbeafe}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.panel{background:white;padding:20px;border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 4px 18px #1725540b}.panel h2{font-size:18px;margin:0 0 14px}.field{display:grid;gap:6px;margin:12px 0}label{font-size:13px;font-weight:650;color:#475569}input,select,button{font:inherit}input[type=file],input[type=number],input[type=text],select{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:9px;background:white}input[type=range]{width:100%}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.preview{width:100%;max-height:320px;object-fit:contain;background:#eef2ff;border:1px dashed #94a3b8;border-radius:12px}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}button,.download{border:0;border-radius:9px;padding:11px 15px;background:#2563eb;color:white;font-weight:700;cursor:pointer;text-decoration:none}button.secondary{background:#e2e8f0;color:#172033}button:disabled{opacity:.45;cursor:not-allowed}.hint{font-size:12px;color:#64748b;line-height:1.5}.status{font-size:13px;margin-top:10px;color:#0f766e;white-space:pre-wrap}.full{grid-column:1/-1}.hidden{display:none}.pill{display:inline-block;background:#dbeafe;color:#1d4ed8;padding:4px 8px;border-radius:99px;font-size:11px;font-weight:700}@media(max-width:720px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.wrap{margin:16px auto}.row{grid-template-columns:1fr 1fr}}
+</style></head>
+<body><main class="wrap">
+<header class="hero"><span class="pill">OFFLINE TOOL · PROJECT 2</span><h1>Form Photo Fixer</h1><p>Resize and compress application photos and signatures on your device. Files are processed in your browser.</p></header>
+<div class="grid">
+<section class="panel"><h2>1. Choose a form preset</h2>
+<div class="field"><label for="preset">Preset</label><select id="preset"><option value="demoA">Demo preset A (replace with official rules)</option><option value="demoB">Demo preset B (replace with official rules)</option><option value="demoC">Demo preset C (replace with official rules)</option><option value="custom">My custom preset</option></select></div>
+<div class="row"><div class="field"><label for="pw">Photo width (mm)</label><input id="pw" type="number" min="5" max="100" value="35"></div><div class="field"><label for="ph">Photo height (mm)</label><input id="ph" type="number" min="5" max="120" value="45"></div></div>
+<div class="row"><div class="field"><label for="sw">Signature width (mm)</label><input id="sw" type="number" min="5" max="150" value="40"></div><div class="field"><label for="sh">Signature height (mm)</label><input id="sh" type="number" min="5" max="80" value="20"></div></div>
+<div class="field"><label for="limit">Maximum file size (KB) — each file</label><input id="limit" type="number" min="5" max="2048" value="50"></div>
+<p class="hint">The built-in values are demonstration values, not verified official requirements. Replace them using the current official application notices before submission.</p>
+</section>
+<section class="panel"><h2>2. Upload photo and signature</h2>
+<div class="field"><label for="photo">Photo (JPG, PNG, WebP)</label><input id="photo" type="file" accept="image/*"></div>
+<div class="field"><label for="signature">Signature (JPG, PNG, WebP)</label><input id="signature" type="file" accept="image/*"></div>
+<p class="hint">Tip: use a clear, front-facing photo. The crop guide is a visual aid; adjust the crop sliders and check the preview yourself.</p>
+<div class="field"><label>Photo preview</label><canvas id="photoPreview" class="preview" width="350" height="450"></canvas></div>
+</section>
+<section class="panel"><h2>3. Adjust photo crop</h2>
+<div class="field"><label for="zoom">Zoom</label><input id="zoom" type="range" min="1" max="3" step="0.01" value="1"></div>
+<div class="field"><label for="xpos">Horizontal position</label><input id="xpos" type="range" min="0" max="100" value="50"></div>
+<div class="field"><label for="ypos">Vertical position</label><input id="ypos" type="range" min="0" max="100" value="50"></div>
+<p class="hint">The dashed inner frame represents the target crop. This starter uses manual positioning rather than automatic face detection.</p>
+</section>
+<section class="panel"><h2>4. Generate files</h2>
+<div class="actions"><button id="generate">Process photo & signature</button><button class="secondary" id="reset">Reset crop</button></div>
+<div id="status" class="status" aria-live="polite">Upload both images, choose the correct form requirements, then process.</div>
+<div class="actions"><a id="photoDownload" class="download hidden" download="form-photo.jpg">Download photo</a><a id="signDownload" class="download hidden" download="form-signature.jpg">Download signature</a></div>
+</section>
+<section class="panel full"><h2>Before you submit</h2><ul class="hint"><li>Confirm photo and signature dimensions and file-size limits from the official form notice.</li><li>Check that the photo crop follows the form's face/head-position rules.</li><li>After downloading, check the actual file size in your computer's file properties.</li><li>Test with Wi-Fi turned off to confirm offline operation.</li></ul></section>
+</div></main>
+<script>
+const $=id=>document.getElementById(id);let photoImg=null,signImg=null,photoUrl=null,signUrl=null;
+const presets={demoA:{pw:35,ph:45,sw:40,sh:20,limit:50},demoB:{pw:30,ph:40,sw:50,sh:20,limit:100},demoC:{pw:35,ph:45,sw:40,sh:15,limit:200}};
+// Correct the demonstration values below when you verify real application notices.
+presets.demoC={pw:35,ph:45,sw:40,sh:15,limit:200};
+function setStatus(s){$('status').textContent=s}
+$('preset').addEventListener('change',()=>{const p=presets[$('preset').value];if(p){$('pw').value=p.pw;$('ph').value=p.ph;$('sw').value=p.sw;$('sh').value=p.sh;$('limit').value=p.limit}});
+function loadFile(input,which){const f=input.files[0];if(!f)return;if(!f.type.startsWith('image/')){setStatus('Please select an image file.');return}const url=URL.createObjectURL(f),img=new Image();img.onload=()=>{if(which==='photo'){photoImg=img;drawPreview()}else signImg=img;setStatus(which+' loaded: '+f.name)};img.onerror=()=>setStatus('Could not read that image.');img.src=url}
+$('photo').addEventListener('change',e=>loadFile(e.target,'photo'));$('signature').addEventListener('change',e=>loadFile(e.target,'signature'));
+['zoom','xpos','ypos','pw','ph'].forEach(id=>$(id).addEventListener('input',drawPreview));
+function cropRect(img,w,h){const target=w/h,source=img.width/img.height;let cw,ch;if(source>target){ch=img.height;cw=ch*target}else{cw=img.width;ch=cw/target}const z=Number($('zoom').value);cw/=z;ch/=z;const x=(img.width-cw)*(Number($('xpos').value)/100),y=(img.height-ch)*(Number($('ypos').value)/100);return{x,y,w:cw,h:ch}}
+function drawPreview(){const c=$('photoPreview'),ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);ctx.fillStyle='#eef2ff';ctx.fillRect(0,0,c.width,c.height);if(!photoImg){ctx.fillStyle='#64748b';ctx.font='15px sans-serif';ctx.textAlign='center';ctx.fillText('Upload a photo to preview',c.width/2,c.height/2);return}const r=c.width/c.height,src=photoImg.width/photoImg.height;let sw,sh;if(src>r){sh=photoImg.height;sw=sh*r}else{sw=photoImg.width;sh=sw/r}const z=Number($('zoom').value);sw/=z;sh/=z;const sx=(photoImg.width-sw)*Number($('xpos').value)/100,sy=(photoImg.height-sh)*Number($('ypos').value)/100;ctx.drawImage(photoImg,sx,sy,sw,sh,0,0,c.width,c.height);ctx.strokeStyle='#ef4444';ctx.lineWidth=3;ctx.setLineDash([8,5]);ctx.strokeRect(12,12,c.width-24,c.height-24);ctx.setLineDash([]);ctx.strokeStyle='rgba(255,255,255,.9)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(c.width/2,12);ctx.lineTo(c.width/2,c.height-12);ctx.moveTo(12,c.height*.38);ctx.lineTo(c.width-12,c.height*.38);ctx.stroke()}
+function mmToPx(mm){return Math.round(Number(mm)*300/25.4)}
+function canvasBlob(canvas,quality){return new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',quality))}
+async function makeOutput(img,wmm,hmm,maxKB,isPhoto){const w=mmToPx(wmm),h=mmToPx(hmm),c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);if(isPhoto){const r=cropRect(img,w,h);ctx.drawImage(img,r.x,r.y,r.w,r.h,0,0,w,h)}else{const scale=Math.min(w/img.width,h/img.height);const dw=img.width*scale,dh=img.height*scale;ctx.drawImage(img,(w-dw)/2,(h-dh)/2,dw,dh)}let blob=null;for(let q=.92;q>=.25;q-=.07){blob=await canvasBlob(c,q);if(blob&&blob.size<=maxKB*1024)break}return{blob,w,h,ok:blob&&blob.size<=maxKB*1024}}
+function showDownload(a,blob,name){if(a.dataset.url)URL.revokeObjectURL(a.dataset.url);const url=URL.createObjectURL(blob);a.href=url;a.dataset.url=url;a.download=name;a.classList.remove('hidden')}
+$('generate').addEventListener('click',async()=>{if(!photoImg||!signImg){setStatus('Please upload both a photo and a signature first.');return}const vals=['pw','ph','sw','sh','limit'].map(id=>Number($(id).value));if(vals.some(v=>!Number.isFinite(v)||v<=0)){setStatus('Enter valid positive dimensions and file-size limits.');return}const btn=$('generate');btn.disabled=true;setStatus('Processing images locally…');try{const p=await makeOutput(photoImg,vals[0],vals[1],vals[4],true),s=await makeOutput(signImg,vals[2],vals[3],vals[4],false);showDownload($('photoDownload'),p.blob,'form-photo.jpg');showDownload($('signDownload'),s.blob,'form-signature.jpg');const kb=b=>(b.size/1024).toFixed(1);setStatus(`Photo: ${p.w} × ${p.h} px, ${kb(p.blob)} KB — ${p.ok?'within limit':'OVER limit'}\nSignature: ${s.w} × ${s.h} px, ${kb(s.blob)} KB — ${s.ok?'within limit':'OVER limit'}\n\nIf a file is over the limit, lower the maximum dimensions only if the official form permits it, or use a simpler image. Do not submit until the official requirements are confirmed.`)}catch(err){setStatus('Processing failed: '+err.message)}finally{btn.disabled=false}});
+$('reset').addEventListener('click',()=>{$('zoom').value=1;$('xpos').value=50;$('ypos').value=50;drawPreview()});drawPreview();
+</script></body></html>

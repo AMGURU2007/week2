@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+    <linearGradient id="lens-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#0284C7" stop-opacity="0.1" />
+    </linearGradient>
+  </defs>
+  <!-- Background squircle -->
+  <rect x="6" y="6" width="116" height="116" rx="28" fill="url(#bg-grad)" stroke="#334155" stroke-width="2"/>
+  
+  <!-- Outer Color Palette Arc Segments -->
+  <!-- Cyan -->
+  <path d="M 64 20 A 44 44 0 0 1 108 64" fill="none" stroke="#06B6D4" stroke-width="8" stroke-linecap="round"/>
+  <!-- Amber -->
+  <path d="M 108 64 A 44 44 0 0 1 64 108" fill="none" stroke="#F59E0B" stroke-width="8" stroke-linecap="round"/>
+  <!-- Magenta -->
+  <path d="M 64 108 A 44 44 0 0 1 20 64" fill="none" stroke="#EC4899" stroke-width="8" stroke-linecap="round"/>
+  <!-- Violet -->
+  <path d="M 20 64 A 44 44 0 0 1 64 20" fill="none" stroke="#8B5CF6" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Magnifying Glass Inspector -->
+  <circle cx="58" cy="58" r="24" fill="url(#lens-grad)" stroke="#F8FAFC" stroke-width="4"/>
+  <!-- Specular highlight -->
+  <path d="M 44 46 A 18 18 0 0 1 66 40" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+  <!-- Inspector Reticle Center dot -->
+  <circle cx="58" cy="58" r="5" fill="#38BDF8"/>
+  <circle cx="58" cy="58" r="2" fill="#FFFFFF"/>
+  <!-- Handle -->
+  <line x1="75" y1="75" x2="98" y2="98" stroke="#E2E8F0" stroke-width="7" stroke-linecap="round"/>
+  <line x1="75" y1="75" x2="98" y2="98" stroke="#94A3B8" stroke-width="3" stroke-linecap="round"/>
+</svg>

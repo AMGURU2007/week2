@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Style Spy</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="brand">
+        <img src="icons/icon48.png" alt="Style Spy Logo" class="brand-logo" width="22" height="22">
+        <span class="brand-name">Style Spy</span>
+        <span class="badge-version">v1.0</span>
+      </div>
+      <div class="header-actions">
+        <span id="domain-badge" class="domain-pill" title="Active Page Domain">detecting...</span>
+        <button id="rescan-btn" class="icon-btn" title="Re-scan current tab" aria-label="Re-scan">
+          <svg class="icon-rescan" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs" role="tablist">
+      <button class="tab-btn active" data-tab="tab-current" role="tab" aria-selected="true">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="m10 15 5-3-5-3v6z"/>
+        </svg>
+        <span>Current Page</span>
+      </button>
+      <button class="tab-btn" data-tab="tab-saved" role="tab" aria-selected="false">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+        </svg>
+        <span>Saved Kits</span>
+        <span id="saved-count-badge" class="counter-badge">0</span>
+      </button>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="content-body">
+      <!-- 1. Current Page Tab -->
+      <section id="tab-current" class="tab-pane active" role="tabpanel">
+        <!-- Loading State -->
+        <div id="loading-state" class="state-container hidden">
+          <div class="spinner"></div>
+          <p class="state-title">Inspecting page styles...</p>
+          <span class="state-subtitle">Scanning DOM elements, colors & typography</span>
+        </div>
+
+        <!-- Error / Restricted State -->
+        <div id="error-state" class="state-container hidden">
+          <div class="state-icon warning-icon">⚠️</div>
+          <p id="error-title" class="state-title">Cannot Inspect Page</p>
+          <p id="error-msg" class="state-subtitle">Chrome restricts script injection on internal pages (chrome://, webstore). Open a standard web page.</p>
+          <button id="error-retry-btn" class="btn btn-secondary">Retry Scan</button>
+        </div>
+
+        <!-- Loaded Data Container -->
+        <div id="data-container">
+          <!-- Page Summary Bar -->
+          <div class="summary-bar">
+            <div class="summary-info">
+              <span id="stat-elements" class="stat-item">0 elements</span>
+              <span class="bullet">•</span>
+              <span id="stat-colors" class="stat-item">0 colors</span>
+              <span class="bullet">•</span>
+              <span id="stat-fonts" class="stat-item">0 fonts</span>
+            </div>
+            <button id="quick-copy-all-btn" class="action-link-btn" title="Copy all hex values as comma list">
+              Copy All Hex
+            </button>
+          </div>
+
+          <!-- Color Palette Section -->
+          <div class="section-block">
+            <div class="section-header">
+              <h2 class="section-title">
+                <span class="section-indicator color-dot"></span>
+                Color Palette
+              </h2>
+              <span class="section-hint">Click swatch to copy HEX</span>
+            </div>
+            <div id="colors-grid" class="colors-grid">
+              <!-- Swatches injected via JS -->
+            </div>
+          </div>
+
+          <!-- Typography Section -->
+          <div class="section-block">
+            <div class="section-header">
+              <h2 class="section-title">
+                <span class="section-indicator font-dot"></span>
+                Typography Hierarchy
+              </h2>
+              <span class="section-hint">Click row to copy CSS</span>
+            </div>
+            <div id="typography-list" class="typography-list">
+              <!-- Typography cards injected via JS -->
+            </div>
+          </div>
+
+          <!-- Save Kit Bar -->
+          <div class="save-kit-card">
+            <label for="kit-name-input" class="save-kit-label">Save as Design Kit</label>
+            <div class="save-kit-inputs">
+              <input type="text" id="kit-name-input" class="kit-name-input" placeholder="e.g., Stripe Design System" spellcheck="false" autocomplete="off">
+              <button id="save-kit-btn" class="btn btn-primary" title="Save to local storage">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none">
+                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                  <polyline points="17 21 17 13 7 13 7 21"/>
+                  <polyline points="7 3 7 8 15 8"/>
+                </svg>
+                <span>Save Kit</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Saved Kits Tab -->
+      <section id="tab-saved" class="tab-pane" role="tabpanel">
+        <div id="saved-kits-empty" class="state-container hidden">
+          <div class="state-icon empty-icon">📁</div>
+          <p class="state-title">No Saved Kits Yet</p>
+          <span class="state-subtitle">Inspect any webpage on the "Current Page" tab and click "Save Kit" to store it permanently.</span>
+        </div>
+
+        <div id="saved-kits-list" class="saved-kits-list">
+          <!-- Saved kit cards injected via JS -->
+        </div>
+      </section>
+    </main>
+
+    <!-- Global Toast Notification -->
+    <div id="toast" class="toast" role="alert" aria-live="polite">
+      <span id="toast-icon" class="toast-icon">✓</span>
+      <span id="toast-msg" class="toast-msg">Copied to clipboard!</span>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
